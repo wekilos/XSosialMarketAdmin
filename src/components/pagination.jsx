@@ -4,7 +4,7 @@ const Pagination = (props) => {
   return (
     <div className="flex items-center cursor-pointer gap-6">
       <div>
-        {props?.meta?.pagination?.current_page != 1 ? (
+        {props?.meta?.current_page != 1 ? (
           <svg
             onClick={() => props?.prev()}
             className="rotate-180"
@@ -45,7 +45,7 @@ const Pagination = (props) => {
               key={"page" + i + 1}
               onClick={() => props?.goTo(item)}
               className={`text-[14px] font-[400]  ${
-                props?.meta?.pagination?.current_page == item && "text-blue"
+                props?.meta?.current_page == item && "text-blue"
               }`}
             >
               {item}
@@ -54,8 +54,7 @@ const Pagination = (props) => {
         })}
       </div>
       <div>
-        {props?.meta?.pagination?.current_page !=
-        props?.meta?.pagination?.total_pages ? (
+        {props?.meta?.current_page != props?.meta?.last_page ? (
           <svg
             onClick={() => props?.next()}
             width="6"

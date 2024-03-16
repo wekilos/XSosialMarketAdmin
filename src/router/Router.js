@@ -22,6 +22,19 @@ import {
   Locations,
   LocationsUpdate,
   LocationsCreate,
+  Sizes,
+  SizesCreate,
+  SizesUpdate,
+  Colors,
+  ColorsCreate,
+  ColorsUpdate,
+  Products,
+  ProductsUpdate,
+  ReportTypes,
+  ReportTypesCreate,
+  ReportTypesUpdate,
+  ReportPosts,
+  ReportPostsUpdate,
 } from "../pages/index";
 
 import ScrollIntoView from "./ScrollIntoView";
@@ -125,22 +138,87 @@ const App = () => {
 
             <PrivateRoute
               restricted={true}
-              component={Home}
+              component={Products}
               path="/products"
               exact
             />
             <PrivateRoute
               restricted={true}
-              component={Home}
+              component={ProductsUpdate}
+              path="/products/:id"
+              exact
+            />
+
+            <PrivateRoute
+              restricted={true}
+              component={Colors}
+              path="/colors"
+              exact
+            />
+            <PrivateRoute
+              restricted={true}
+              component={ColorsCreate}
+              path="/colors/create"
+              exact
+            />
+            <PrivateRoute
+              restricted={true}
+              component={ColorsUpdate}
+              path="/colors/:id"
+              exact
+            />
+
+            <PrivateRoute
+              restricted={true}
+              component={Sizes}
+              path="/sizes"
+              exact
+            />
+            <PrivateRoute
+              restricted={true}
+              component={SizesCreate}
+              path="/sizes/create"
+              exact
+            />
+            <PrivateRoute
+              restricted={true}
+              component={SizesUpdate}
+              path="/sizes/:id"
+              exact
+            />
+
+            <PrivateRoute
+              restricted={true}
+              component={ReportTypes}
               path="/reports"
               exact
             />
             <PrivateRoute
               restricted={true}
-              component={Home}
+              component={ReportTypesCreate}
+              path="/reports/create"
+              exact
+            />
+            <PrivateRoute
+              restricted={true}
+              component={ReportTypesUpdate}
+              path="/reports/:id"
+              exact
+            />
+
+            <PrivateRoute
+              restricted={true}
+              component={ReportPosts}
               path="/postreports"
               exact
             />
+            <PrivateRoute
+              restricted={true}
+              component={ReportPostsUpdate}
+              path="/postreports/:id"
+              exact
+            />
+
             <PrivateRoute
               restricted={true}
               component={Home}

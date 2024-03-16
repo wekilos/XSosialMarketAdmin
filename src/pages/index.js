@@ -28,3 +28,28 @@ export const UserUpdateOfBuzniz = lazy(() =>
 export const Locations = lazy(() => import("./location/locations"));
 export const LocationsUpdate = lazy(() => import("./location/locationUpdate"));
 export const LocationsCreate = lazy(() => import("./location/locationCreate"));
+
+export const Sizes = lazy(() => import("./sizes/sizes"));
+export const SizesUpdate = lazy(() => import("./sizes/sizeUpdate"));
+export const SizesCreate = lazy(() => import("./sizes/sizeCreate"));
+
+export const Colors = lazy(() => import("./colors/colors"));
+export const ColorsUpdate = lazy(() => import("./colors/colorUpdate"));
+export const ColorsCreate = lazy(() => import("./colors/colorCreate"));
+
+export const Products = lazy(() => import("./products/products"));
+export const ProductsUpdate = lazy(() => import("./products/productsUpdate"));
+// export const ColorsCreate = lazy(() => import("./colors/colorCreate"));
+
+export const ReportTypes = lazy(() => import("./reportType/reportTypes"));
+export const ReportTypesUpdate = lazy(() =>
+  import("./reportType/reportTypesUpdate")
+);
+export const ReportTypesCreate = lazy(() =>
+  import("./reportType/reportTypesCreate")
+);
+
+export const ReportPosts = lazy(() => import("./reportPost/reportPosts"));
+export const ReportPostsUpdate = lazy(() =>
+  import("./reportPost/reportPostsUpdate")
+);

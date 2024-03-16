@@ -23,6 +23,7 @@ const Categories = () => {
     limit: 10,
     page: 1,
     search_query: "",
+    sort: "default",
   });
 
   // useEffect(() => {
@@ -47,7 +48,7 @@ const Categories = () => {
         setCategories(data.data);
         let i = 1;
         let array = [];
-        while (i <= data?.data?.meta?.pagination?.total_pages) {
+        while (i <= data?.data?.meta?.last_page) {
           array.push(i);
           i++;
         }
@@ -294,7 +295,7 @@ const Categories = () => {
         {selecteds?.length == 0 ? (
           <div className="w-full flex mt-5 justify-between items-center">
             <h1 className="text-[14px] font-[400]">
-              {categories?.meta?.pagination?.total} Kategoriýa
+              {categories?.meta?.total} Kategoriýa
             </h1>
             <Pagination
               meta={categories?.meta}

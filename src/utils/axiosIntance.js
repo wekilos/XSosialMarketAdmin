@@ -1,7 +1,8 @@
 import axios from "axios";
 import { token } from "./token";
-const BASE_URL = "http://216.250.10.22:6543/api/admin/";
-// const BASE_URL = "http://216.250.12.106:8080";
+// const BASE_URL = "https://sanlymerkez.com:6443/api/admin/";
+// const BASE_URL = "http://95.85.126.140:80/api/v1/admin/";
+const BASE_URL = "https://tanat.com.tm/api/v1/admin/";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,

@@ -22,7 +22,8 @@ const Login = () => {
         console.log(data.data);
         if (data.data?.token) {
           localStorage.setItem("userData", JSON.stringify(data.data));
-          history.push({ pathname: "/home" });
+          // history.push({ pathname: "/home" });
+          window.open("/home", "_self");
         } else {
           console.log("eeeeeeee");
         }
@@ -57,6 +58,9 @@ const Login = () => {
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") login();
+              }}
               id="phone"
               name="phone"
               className="px-4 text-[#98A2B2] text-[16px] font-[400] h-[50px] w-[400px] rounded-[6px] border-[1px] border-[#98A2B2] outline-none"
@@ -73,6 +77,9 @@ const Login = () => {
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") login();
+              }}
               id="password"
               name="password"
               className="px-4 text-[#98A2B2] text-[16px] font-[400] leading-[50px] h-[50px] w-[400px] rounded-[6px] border-[1px] border-[#98A2B2] outline-none"
@@ -93,7 +100,7 @@ const Login = () => {
           Açar sözi we admin maglumatlary üýtgetmek üçin super admina ýüz tutuň.
         </div>
       </div>
-      <div className="h-[100vh] w-fit bg-red">
+      <div className="h-[100vh] w-fit">
         <img className="h-[100vh] object-contain" src={loginImg} alt="" />
       </div>
     </div>

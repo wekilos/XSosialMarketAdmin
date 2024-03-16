@@ -10,6 +10,7 @@ import { closeSidebar } from "./utils";
 import { useHistory, useLocation } from "react-router-dom";
 import Modal from "@mui/joy/Modal";
 import Sheet from "@mui/joy/Sheet";
+import { logout } from "../utils/index";
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
@@ -36,6 +37,7 @@ export default function Sidebar() {
   const path = useLocation();
   const [openModal, setOpenModal] = React.useState(false);
   const history = useHistory();
+  const user = JSON.parse(localStorage.getItem("userData"));
   return (
     <Sheet
       className="!p-[0px] !bg-[#F7F8FA]"
@@ -67,18 +69,20 @@ export default function Sidebar() {
         Tanat Admin
       </div>
 
-      <div className="min-h-[100px] h-[100px] w-[80%] mx-auto border-b-[1px] border-[#E9EBF0] gap-4 font-[600] text-[22px]   flex items-center justify-center">
-        <div className="w-[50px] h-[50px] rounded-[100%] bg-[#E9EBF0]">
+      <div className="min-h-[100px]  h-[100px] w-[80%] mx-auto border-b-[1px] border-[#E9EBF0] gap-4 font-[600] text-[22px]   flex items-center justify-center">
+        <div className="min-w-[50px] min-h-[50px] rounded-[100%] bg-[#E9EBF0]">
           {/* <img
             className="w-[50px] h-[50px] rounded-[100%] bg-[#E9EBF0]"
             src=""
             alt=""
           /> */}
         </div>
-        <div className="flex gap-1 flex-wrap w-fit">
-          <div className="text-[14px] w-fit font-[500]">Sähet Kakalyýew</div>
+        <div className="flex gap-1 flex-wrap w-full">
+          <div className="text-[14px] w-full font-[500]">
+            {user?.admin?.name}
+          </div>
           <div className="text-[12px] font-[600] text-[#B8BFCC]">
-            Super Admin
+            {user?.admin?.is_super ? "Super" : ""} Admin
           </div>
         </div>
       </div>
@@ -342,7 +346,7 @@ export default function Sidebar() {
           <ListItem className="h-[50px] hover:bg-[#3B82F6]">
             <ListItemButton
               onClick={() => history.push({ pathname: "/products" })}
-              selected={path.pathname == "/products"}
+              selected={path.pathname.includes("/products")}
             >
               <svg
                 width="24"
@@ -379,24 +383,108 @@ export default function Sidebar() {
 
           <ListItem
             selected={
-              path?.pathname == "/reports" ||
-              path?.pathname == "/postreports" ||
-              path?.pathname == "/accountreports"
+              path?.pathname.includes("/colors") ||
+              path?.pathname.includes("/sizes")
             }
             nested
           >
             <Toggler
               defaultExpanded={
-                path?.pathname == "/reports" ||
-                path?.pathname == "/postreports" ||
-                path?.pathname == "/accountreports"
+                path?.pathname.includes("/colors") ||
+                path?.pathname.includes("/sizes")
               }
               renderToggle={({ open, setOpen }) => (
                 <ListItemButton
                   selected={
-                    path?.pathname == "/reports" ||
-                    path?.pathname == "/postreports" ||
-                    path?.pathname == "/accountreports"
+                    path?.pathname.includes("/colors") ||
+                    path?.pathname.includes("/sizes")
+                      ? true
+                      : false
+                  }
+                  onClick={() => setOpen(!open)}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M17.8994 22C20.1086 22 21.8994 20.2091 21.8994 18C21.8994 15.7909 20.1086 14 17.8994 14H17.6797L11.878 19.798C11.636 20.0399 11.5 20.3391 11.5 20.6813C11.5 21.3936 12.0774 22 12.7897 22H17.8994Z"
+                      fill="#3B82F6"
+                    />
+                    <path
+                      d="M13.2839 4.95882L12.2291 6.01357C11.7633 6.48107 11.5012 7.11381 11.5 7.7738L11.5 16.0119C11.5 17.0666 11.5 17.5939 11.8135 17.7199C12.1271 17.8459 12.492 17.4653 13.2219 16.704L19.0599 10.6144C20.5819 9.02691 20.5554 6.51391 19.0003 4.95883C17.4218 3.38026 14.8624 3.38026 13.2839 4.95882Z"
+                      fill="#3B82F6"
+                    />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M10 6V18C10 20.2091 8.20914 22 6 22C3.79086 22 2 20.2091 2 18V6C2 3.79086 3.79086 2 6 2C8.20914 2 10 3.79086 10 6ZM6 19C6.55228 19 7 18.5523 7 18C7 17.4477 6.55228 17 6 17C5.44772 17 5 17.4477 5 18C5 18.5523 5.44772 19 6 19Z"
+                      fill="#3B82F6"
+                    />
+                  </svg>
+
+                  <ListItemContent>
+                    <div className="text-[14px]  h-[38px] items-center flex font-[500] text-black">
+                      Haryt goşmaçalary
+                    </div>
+                  </ListItemContent>
+                  <KeyboardArrowDownIcon
+                    sx={{ transform: open ? "rotate(180deg)" : "none" }}
+                  />
+                </ListItemButton>
+              )}
+            >
+              <List
+                className="border-l-[2px] !ml-3 !mt-1 border-[#E9EBF0]"
+                sx={{ gap: 0.5 }}
+              >
+                <ListItem className="!pl-5" sx={{}}>
+                  <ListItemButton
+                    onClick={() => history.push({ pathname: "/colors" })}
+                    className={`h-[40px] hover:text-blue ${
+                      path?.pathname.includes("/colors") ? " !text-blue" : ""
+                    }`}
+                  >
+                    Reňkler
+                  </ListItemButton>
+                </ListItem>
+                <ListItem className="!pl-5">
+                  <ListItemButton
+                    onClick={() => history.push({ pathname: "/sizes" })}
+                    className={`h-[40px] hover:text-blue ${
+                      path?.pathname.includes("/sizes") ? " !text-blue" : ""
+                    }`}
+                  >
+                    Razmerler
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Toggler>
+          </ListItem>
+
+          <ListItem
+            selected={
+              path?.pathname.includes("/reports") ||
+              path?.pathname.includes("/postreports") ||
+              path?.pathname.includes("/accountreports")
+            }
+            nested
+          >
+            <Toggler
+              defaultExpanded={
+                path?.pathname.includes("/reports") ||
+                path?.pathname.includes("/postreports") ||
+                path?.pathname.includes("/accountreports")
+              }
+              renderToggle={({ open, setOpen }) => (
+                <ListItemButton
+                  selected={
+                    path?.pathname.includes("/reports") ||
+                    path?.pathname.includes("/postreports") ||
+                    path?.pathname.includes("/accountreports")
                       ? true
                       : false
                   }
@@ -436,7 +524,7 @@ export default function Sidebar() {
                   <ListItemButton
                     onClick={() => history.push({ pathname: "/reports" })}
                     className={`h-[40px] hover:text-blue ${
-                      path?.pathname == "/reports" ? " !text-blue" : ""
+                      path?.pathname.includes("/reports") ? " !text-blue" : ""
                     }`}
                   >
                     Report görnüşleri
@@ -446,7 +534,9 @@ export default function Sidebar() {
                   <ListItemButton
                     onClick={() => history.push({ pathname: "/postreports" })}
                     className={`h-[40px] hover:text-blue ${
-                      path?.pathname == "/postreports" ? " !text-blue" : ""
+                      path?.pathname.includes("/postreports")
+                        ? " !text-blue"
+                        : ""
                     }`}
                   >
                     Post reportlar
@@ -458,7 +548,9 @@ export default function Sidebar() {
                       history.push({ pathname: "/accountreports" })
                     }
                     className={`h-[40px] hover:text-blue ${
-                      path?.pathname == "/accountreports" ? " !text-blue" : ""
+                      path?.pathname.includes("/accountreports")
+                        ? " !text-blue"
+                        : ""
                     }`}
                   >
                     Hasap reportlar
@@ -637,7 +729,13 @@ export default function Sidebar() {
               >
                 Goýbolsun et
               </button>
-              <button className="text-[14px] font-[500] text-white hover:bg-[#fd6060] bg-[#FF4D4D] rounded-[8px] px-6 py-3">
+              <button
+                onClick={() => {
+                  logout();
+                  history.push({ pathname: "/login" });
+                }}
+                className="text-[14px] font-[500] text-white hover:bg-[#fd6060] bg-[#FF4D4D] rounded-[8px] px-6 py-3"
+              >
                 Ulgamdan çyk
               </button>
             </div>

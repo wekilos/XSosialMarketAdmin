@@ -44,7 +44,7 @@ const StandartUsers = () => {
         setUsers(data.data);
         let i = 1;
         let array = [];
-        while (i <= data?.data?.meta?.pagination?.total_pages) {
+        while (i <= data?.data?.meta?.last_page) {
           array.push(i);
           i++;
         }
@@ -303,7 +303,7 @@ const StandartUsers = () => {
         {selecteds?.length == 0 ? (
           <div className="w-full flex mt-5 justify-between items-center">
             <h1 className="text-[14px] font-[400]">
-              {users?.meta?.pagination?.total} Biznes hasap
+              {users?.meta?.total} Biznes hasap
             </h1>
             <Pagination
               meta={users?.meta}

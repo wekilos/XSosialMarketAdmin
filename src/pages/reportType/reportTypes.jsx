@@ -11,38 +11,37 @@ import { useHistory } from "react-router-dom";
 import Pagination from "../../components/pagination";
 import PageLoading from "../../components/PageLoading";
 
-const Brands = () => {
+const ReportTypes = () => {
   const history = useHistory();
   const [pages, setPages] = useState([]);
   const [isDelete, setISDelete] = useState(false);
-  const [brands, setBrands] = useState([]);
+  const [reports, setReports] = useState([]);
   const [selecteds, setSelecteds] = useState([]);
   const [allSelected, setAllSelected] = useState(false);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState({
     limit: 10,
     page: 1,
-    type: "simple",
     search_query: "",
     sort: "default",
   });
 
   useEffect(() => {
     const time = setTimeout(() => {
-      getBrands();
+      getReports();
     }, 400);
 
     return () => clearTimeout(time);
   }, [filter]);
 
-  const getBrands = () => {
+  const getReports = () => {
     setLoading(true);
     axiosInstance
-      .post("/brands", filter)
+      .post("/report/types", filter)
       .then((data) => {
         setLoading(false);
         console.log(data.data);
-        setBrands(data.data);
+        setReports(data.data);
         let i = 1;
         let array = [];
         while (i <= data?.data?.meta?.last_page) {
@@ -80,7 +79,7 @@ const Brands = () => {
   const selectAll = () => {
     setAllSelected(true);
     let array = [];
-    brands?.data?.map((item) => {
+    reports?.data?.map((item) => {
       array.push(item?.id);
     });
     setSelecteds([...array]);
@@ -97,14 +96,15 @@ const Brands = () => {
     return bar;
   };
 
-  const deleteBrands = () => {
+  const deleteReports = () => {
     axiosInstance
-      .post("/brands/delete", {
-        brands: selecteds,
+      .post("/report/types/delete", {
+        types: selecteds,
       })
       .then((data) => {
         console.log(data.data);
-        getBrands();
+        getReports();
+        setISDelete(false);
         setSelecteds([]);
       })
       .catch((err) => {
@@ -116,9 +116,11 @@ const Brands = () => {
     <div className="w-full">
       {/* header section */}
       <div className="w-full pb-[30px] flex justify-between items-center">
-        <h1 className="text-[30px] font-[700]">Markalar</h1>
+        <h1 className="text-[30px] font-[700]">Report görnüşleri</h1>
         <div className="w-fit flex gap-5">
           <Select
+            value={filter?.sort}
+            onChange={(e, value) => setFilter({ ...filter, sort: value })}
             placeholder="Hemmesini görkez"
             className="!border-[#E9EBF0] !border-[1px] !h-[40px] !bg-white !rounded-[8px] !px-[17px] !w-fit !min-w-[200px] !text-[14px] !text-black  "
             indicator={<KeyboardArrowDown className="!text-[16px]" />}
@@ -131,17 +133,18 @@ const Brands = () => {
               },
             }}
           >
-            <Option value="Ahlisi">Hemmesini görkez</Option>
-            <Option value="Active">Adyna görä</Option>
-            <Option value="Disactive">Haryt sanyna göra</Option>
-            <Option value="Statusyna">Statusyna görä</Option>
+            <Option value="default">Hemmesini görkez</Option>
+            <Option value="title">Adyna görä</Option>
+            <Option value="created_at">Senesine görä</Option>
+            <Option value="is_active">Statusyna görä</Option>
+            <Option value="story_reports_count">Report sanyna görä</Option>
           </Select>
           <Button
-            onClick={() => history.push({ pathname: "/brands/create" })}
+            onClick={() => history.push({ pathname: "/reports/create" })}
             className="  !h-[40px] !bg-blue !rounded-[8px] !px-[17px] !w-fit   !text-[14px] !text-white  "
             startDecorator={<Add />}
           >
-            Marka goş
+            Report görnüşi goş
           </Button>
           {/* <button className="h-[40px] border-[#E9EBF0] border-[1px] rounded-[8px]"></button> */}
         </div>
@@ -211,8 +214,11 @@ const Brands = () => {
             Ady
           </h1>
 
-          <h1 className="text-[14px] font-[500] text-[#98A2B2] w-[35%] min-w-[200px] whitespace-nowrap uppercase">
-            DEgişli haryt sany
+          <h1 className="text-[14px] font-[500] text-[#98A2B2] w-[20%]   whitespace-nowrap uppercase">
+            Report sany
+          </h1>
+          <h1 className="text-[14px] font-[500] text-[#98A2B2] w-[20%]   whitespace-nowrap uppercase">
+            Senesi
           </h1>
 
           <h1 className="text-[14px] font-[500] text-[#98A2B2] w-[15%] uppercase">
@@ -221,7 +227,7 @@ const Brands = () => {
         </div>
 
         {/* Table body */}
-        {brands?.data?.map((item, i) => {
+        {reports?.data?.map((item, i) => {
           return loading ? (
             <PageLoading />
           ) : (
@@ -241,8 +247,15 @@ const Brands = () => {
                 {item?.title}
               </h1>
 
-              <h1 className="text-[14px] font-[500] text-black w-[35%] min-w-[200px] whitespace-nowrap uppercase">
-                {item?.products_count + "  "} haryt
+              <h1 className="text-[14px] font-[500] text-black w-[20%]   whitespace-nowrap uppercase">
+                {+item?.post_reports_count +
+                  +item?.story_reports_count +
+                  +item?.user_reports_count}
+              </h1>
+              <h1 className="text-[14px] font-[500] text-black w-[20%]   whitespace-nowrap uppercase">
+                {item?.created_at?.slice(0, 10) +
+                  " / " +
+                  item?.created_at?.slice(11, 16)}
               </h1>
 
               <h1 className="text-[14px] flex items-center justify-between gap-4 font-[500] text-[#98A2B2] w-[15%] uppercase">
@@ -258,7 +271,7 @@ const Brands = () => {
 
                 <div
                   onClick={() =>
-                    history.push({ pathname: "/brands/" + item?.id })
+                    history.push({ pathname: "/reports/" + item?.id })
                   }
                   className="cursor-pointer p-2"
                 >
@@ -283,10 +296,10 @@ const Brands = () => {
         {selecteds?.length == 0 ? (
           <div className="w-full flex mt-5 justify-between items-center">
             <h1 className="text-[14px] font-[400]">
-              {brands?.meta?.total} Marka
+              {reports?.meta?.total} Report görnüşi
             </h1>
             <Pagination
-              meta={brands?.meta}
+              meta={reports?.meta}
               pages={pages}
               next={() => setFilter({ ...filter, page: filter.page + 1 })}
               prev={() => setFilter({ ...filter, page: filter.page - 1 })}
@@ -339,7 +352,7 @@ const Brands = () => {
             }}
           >
             <div className="flex w-[350px] border-b-[1px] border-[#E9EBF0] pb-5 justify-between items-center">
-              <h1 className="text-[20px] font-[500]">Marka aýyrmak</h1>
+              <h1 className="text-[20px] font-[500]">Report görnüşi aýyrmak</h1>
               <button onClick={() => setISDelete(false)}>
                 <svg
                   width="16"
@@ -360,7 +373,7 @@ const Brands = () => {
 
             <div>
               <h1 className="text-[16px] text-center my-10 font-[400]">
-                Markany aýyrmak isleýärsiňizmi?
+                Report görnüşi aýyrmak isleýärsiňizmi?
               </h1>
 
               <div className="flex gap-[29px] justify-center">
@@ -371,7 +384,7 @@ const Brands = () => {
                   Goýbolsun et
                 </button>
                 <button
-                  onClick={() => deleteBrands()}
+                  onClick={() => deleteReports()}
                   className="text-[14px] font-[500] text-white hover:bg-[#fd6060] bg-[#FF4D4D] rounded-[8px] px-6 py-3"
                 >
                   Aýyr
@@ -385,4 +398,4 @@ const Brands = () => {
   );
 };
 
-export default React.memo(Brands);
+export default React.memo(ReportTypes);

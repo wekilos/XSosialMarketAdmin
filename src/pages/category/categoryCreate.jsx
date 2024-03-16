@@ -46,7 +46,7 @@ const CategoryCreate = () => {
   const fileHandler = (f) => {
     console.log(f);
 
-    let type = f.type?.split("/")[1];
+    let type = f?.type?.split("/")[1];
     console.log(type);
     if (
       (type == "png" || type == "jpg" || type == "jpeg") &&

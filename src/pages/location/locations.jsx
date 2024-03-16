@@ -43,7 +43,7 @@ const Locations = () => {
         setLocations(data.data);
         let i = 1;
         let array = [];
-        while (i <= data?.data?.meta?.pagination?.total_pages) {
+        while (i <= data?.data?.meta?.last_page) {
           array.push(i);
           i++;
         }
@@ -285,7 +285,7 @@ const Locations = () => {
         {selecteds?.length == 0 ? (
           <div className="w-full flex mt-5 justify-between items-center">
             <h1 className="text-[14px] font-[400]">
-              {locations?.meta?.pagination?.total} Ýerleşýän ýer
+              {locations?.meta?.total} Ýerleşýän ýer
             </h1>
             <Pagination
               meta={locations?.meta}
