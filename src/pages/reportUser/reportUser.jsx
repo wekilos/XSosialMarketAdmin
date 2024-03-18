@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 import Pagination from "../../components/pagination";
 import PageLoading from "../../components/PageLoading";
 
-const ReportPosts = () => {
+const ReportUsers = () => {
   const history = useHistory();
   const [pages, setPages] = useState([]);
   const [isDelete, setISDelete] = useState(false);
@@ -37,7 +37,7 @@ const ReportPosts = () => {
   const getReports = () => {
     setLoading(true);
     axiosInstance
-      .post("/post/reports", filter)
+      .post("/user/reports", filter)
       .then((data) => {
         setLoading(false);
         console.log(data.data);
@@ -96,10 +96,9 @@ const ReportPosts = () => {
     return bar;
   };
 
-  const deleteReports = () => {
-    setISDelete(false);
+  const deleteUsers = () => {
     axiosInstance
-      .post("/posts/delete", {
+      .post("/post/delete", {
         posts: selecteds,
       })
       .then((data) => {
@@ -117,7 +116,7 @@ const ReportPosts = () => {
     <div className="w-full">
       {/* header section */}
       <div className="w-full pb-[30px] flex justify-between items-center">
-        <h1 className="text-[30px] font-[700]">Post reportlar</h1>
+        <h1 className="text-[30px] font-[700]">Hasap reportlar </h1>
         <div className="w-fit flex gap-5">
           <Select
             value={filter?.sort}
@@ -216,11 +215,11 @@ const ReportPosts = () => {
           </h1>
 
           <h1 className="text-[14px] font-[500] text-[#98A2B2] w-[20%] uppercase">
-            Ady
+            Ulanyjy ady
           </h1>
 
           <h1 className="text-[14px] font-[500] text-[#98A2B2] w-[20%] uppercase">
-            Satyjy
+            Ady
           </h1>
 
           <h1 className="text-[14px] font-[500]  text-[#98A2B2] w-[20%] uppercase">
@@ -255,17 +254,17 @@ const ReportPosts = () => {
               <h1 className="rounded-[4px]  flex items-center justify-center min-w-[40px] w-[40px] h-[40px] bg-[#F7F8FA]">
                 <img
                   className="w-full  h-full object-cover rounded-[4px]"
-                  src={item?.icon}
+                  src={item?.profile_image}
                   alt=""
                 />
               </h1>
 
               <h1 className="text-[14px] font-[500] text-black w-[20%] uppercase">
-                {item?.caption}
+                {item?.username}
               </h1>
 
               <h1 className="text-[14px] font-[500] text-black w-[20%] uppercase">
-                {item?.user}
+                {item?.full_name}
               </h1>
 
               <h1 className="text-[14px] font-[500] text-black w-[20%] uppercase">
@@ -282,7 +281,7 @@ const ReportPosts = () => {
                 {item?.reports_count}
                 <div
                   onClick={() =>
-                    history.push({ pathname: "/postreports/" + item?.id })
+                    history.push({ pathname: "/accountreports/" + item?.id })
                   }
                   className="cursor-pointer p-2"
                 >
@@ -307,7 +306,7 @@ const ReportPosts = () => {
         {selecteds?.length == 0 ? (
           <div className="w-full flex mt-5 justify-between items-center">
             <h1 className="text-[14px] font-[400]">
-              {reports?.meta?.total} Post report
+              {reports?.meta?.total} Biznes hasap
             </h1>
             <Pagination
               meta={reports?.meta}
@@ -395,7 +394,7 @@ const ReportPosts = () => {
                   Goýbolsun et
                 </button>
                 <button
-                  onClick={() => deleteReports()}
+                  onClick={() => deleteUsers()}
                   className="text-[14px] font-[500] text-white hover:bg-[#fd6060] bg-[#FF4D4D] rounded-[8px] px-6 py-3"
                 >
                   Aýyr
@@ -409,4 +408,4 @@ const ReportPosts = () => {
   );
 };
 
-export default React.memo(ReportPosts);
+export default React.memo(ReportUsers);

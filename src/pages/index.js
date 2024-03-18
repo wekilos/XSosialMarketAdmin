@@ -53,3 +53,8 @@ export const ReportPosts = lazy(() => import("./reportPost/reportPosts"));
 export const ReportPostsUpdate = lazy(() =>
   import("./reportPost/reportPostsUpdate")
 );
+
+export const ReportUsers = lazy(() => import("./reportUser/reportUser"));
+export const ReportUsersUpdate = lazy(() =>
+  import("./reportUser/reportUserUpdate")
+);

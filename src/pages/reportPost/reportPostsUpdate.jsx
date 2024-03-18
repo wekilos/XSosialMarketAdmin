@@ -23,10 +23,10 @@ const ReportPostsUpdate = () => {
   const [reports, setReports] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [iSDelete, setISDelete] = useState(false);
   const [post, setPost] = useState({
     is_active: 1,
   });
-  const [stockOpen, setStockOpen] = useState(false);
   const [oldPost, setOldPost] = useState({
     is_active: 1,
   });
@@ -49,7 +49,6 @@ const ReportPostsUpdate = () => {
       .then((data) => {
         console.log(data.data?.data);
         setPost(data.data.data);
-        setOldPost(data.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -100,26 +99,33 @@ const ReportPostsUpdate = () => {
       });
   };
 
-  const updateUser = () => {
-    history.push({ pathname: "/postreports" });
-  };
-
-  const blockUser = () => {
+  const updatePost = () => {
     axiosInstance
-      .post("users/block/" + id, {
-        reason: reason,
-      })
+      .post("/posts/update/" + id, { is_active: post?.is_active })
       .then((data) => {
+        setLoading(false);
         // console.log(data.data);
-        setReason("");
-        setPost({ ...post, has_blocked: false });
+        history.push({ pathname: "/postreports" });
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const deleteReports = () => {};
+  const deleteReports = () => {
+    axiosInstance
+      .post("/posts/delete", {
+        posts: [id],
+      })
+      .then((data) => {
+        console.log(data.data);
+        setISDelete(false);
+        history.push({ pathname: "/postreports" });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return loading ? (
     <PageLoading />
@@ -154,13 +160,13 @@ const ReportPostsUpdate = () => {
       )}
       {/* header section */}
       <div className="w-full pb-[30px] flex justify-between items-center">
-        <h1 className="text-[30px] font-[700]">Harytlar</h1>
+        <h1 className="text-[30px] font-[700]">Post reportlar</h1>
       </div>
 
       <div className="w-full min-h-[60vh] p-5 bg-white rounded-[8px]">
         <div className=" flex items-center gap-4 pb-5 border-b-[1px] border-b-[#E9EBF0]">
           <div className="border-l-[3px] border-blue h-[20px]"></div>
-          <h1 className="text-[20px] font-[500]">Harytlar maglumaty</h1>
+          <h1 className="text-[20px] font-[500]">Report maglumaty</h1>
         </div>
 
         <div className="flex items-center object-contain justify-between py-[30px]">
@@ -616,7 +622,7 @@ const ReportPostsUpdate = () => {
           </div>
           <div className="flex justify-start w-[49%]">
             <button
-              onClick={() => deleteReports()}
+              onClick={() => setISDelete(true)}
               className="text-[16px] flex items-center gap-3 font-[500] text-white hover:bg-[#fd6060] bg-[#FF4D4D] rounded-[8px] px-5 py-2"
             >
               <svg
@@ -680,7 +686,7 @@ const ReportPostsUpdate = () => {
             Goýbolsun et
           </button>
           <button
-            onClick={() => updateUser()}
+            onClick={() => updatePost()}
             className="text-white text-[14px] font-[500] py-[11px] px-[27px] bg-blue rounded-[8px] hover:bg-opacity-90"
           >
             Ýatda sakla
@@ -692,25 +698,22 @@ const ReportPostsUpdate = () => {
       <Modal
         aria-labelledby="modal-title"
         aria-describedby="modal-desc"
-        open={post?.has_blocked}
-        onClose={() => setPost({ ...post, has_blocked: false })}
+        open={iSDelete}
+        onClose={() => iSDelete(false)}
         sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
         <Sheet
           variant="outlined"
           sx={{
-            maxWidth: 600,
-            width: "50%",
+            maxWidth: 500,
             borderRadius: "md",
             p: 3,
             boxShadow: "lg",
           }}
         >
-          <div className="flex w-full border-b-[1px] border-[#E9EBF0] pb-5 justify-between items-center">
-            <h1 className="text-[20px] font-[500]">
-              Hasaby bloklamanyň sebäbi
-            </h1>
-            <button onClick={() => setPost({ ...post, has_blocked: false })}>
+          <div className="flex w-[350px] border-b-[1px] border-[#E9EBF0] pb-5 justify-between items-center">
+            <h1 className="text-[20px] font-[500]">Post report aýyrmak</h1>
+            <button onClick={() => setISDelete(false)}>
               <svg
                 width="16"
                 height="16"
@@ -729,33 +732,22 @@ const ReportPostsUpdate = () => {
           </div>
 
           <div>
-            <h1 className="text-[16px] text-left mt-4 mb-1 font-[400]">
-              Düşündiriş
+            <h1 className="text-[16px] text-center my-10 font-[400]">
+              Post reporty aýyrmak isleýärsiňizmi?
             </h1>
 
-            <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              name=""
-              placeholder="Text"
-              id=""
-              cols="30"
-              rows="10"
-              className="text-[14px] max-h-[400px] min-h-[100px] w-full mb-1 text-[#98A2B2] font-[400]  border-[1px] border-[#98A2B2] rounded-[6px] px-5 py-3 outline-none "
-            ></textarea>
-
-            <div className="flex w-full gap-[29px] justify-center">
+            <div className="flex gap-[29px] justify-center">
               <button
-                onClick={() => setPost({ ...post, has_blocked: false })}
-                className="text-[14px] font-[500] px-6 py-3 text-[#98A2B2] rounded-[8px] hover:bg-[#fd6060] hover:text-white"
+                onClick={() => setISDelete(false)}
+                className="text-[14px] font-[500] px-6 py-3 text-[#98A2B2] rounded-[8px] hover:bg-blue hover:text-white"
               >
                 Goýbolsun et
               </button>
               <button
-                onClick={() => blockUser()}
-                className="text-[14px] font-[500] text-white hover:bg-opacity-90  bg-blue rounded-[8px] px-6 py-3"
+                onClick={() => deleteReports()}
+                className="text-[14px] font-[500] text-white hover:bg-[#fd6060] bg-[#FF4D4D] rounded-[8px] px-6 py-3"
               >
-                Blokla
+                Aýyr
               </button>
             </div>
           </div>

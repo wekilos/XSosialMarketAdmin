@@ -20,21 +20,15 @@ const ProductsUpdate = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const [newFile, setNewFile] = useState(false);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [post, setPost] = useState({
     is_active: 1,
   });
   const [stockOpen, setStockOpen] = useState(false);
-  const [oldPost, setOldPost] = useState({
-    is_active: 1,
-  });
-  const [file, setFile] = useState(null);
+
   const fileRef = useRef(null);
   const [warning, setWarning] = useState(false);
-  const [valitMail, setValitMail] = useState(true);
-  const [reason, setReason] = useState("");
 
   useEffect(() => {
     getData();
@@ -48,7 +42,6 @@ const ProductsUpdate = () => {
       .then((data) => {
         console.log(data.data?.data);
         setPost(data.data.data);
-        setOldPost(data.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -87,76 +80,13 @@ const ProductsUpdate = () => {
       });
   };
 
-  const updateUser = () => {
-    history.push({ pathname: "/products" });
-    // setLoading(true);
-    // console.log(post);
-    const formData = new FormData();
-    oldPost?.phone != post?.phone && formData.append("phone", post?.phone);
-    oldPost?.username != post?.username &&
-      formData.append("username", post?.username);
-
-    setValitMail(validateEmail(post?.email));
-    // console.log("email:::", validateEmail(post?.email));
-    oldPost?.email != post?.email && formData.append("email", post?.email);
-    formData.append("is_active", post?.is_active ? 1 : 0);
-    formData.append("profile[verified]", post?.profile?.verified ? 1 : 0);
-
-    formData.append("profile[full_name]", post?.profile?.full_name);
-    post?.profile?.bio && formData.append("profile[bio]", post?.profile?.bio);
-    post?.profile?.birthdate &&
-      formData.append(
-        "profile[birthdate]",
-        post?.profile?.birthdate?.slice(0, 10)
-      );
-    post?.profile?.location?.id &&
-      formData.append("profile[location_id]", post?.profile?.location?.id);
-    post?.profile?.category?.id &&
-      formData.append("profile[category_id]", post?.profile?.category?.id);
-    formData.append("profile[private]", post?.profile?.private ? 1 : 0);
-    file && formData.append("profile[profile_image]", file);
-
-    false
-      ? axiosInstance
-          .post("/users/update/" + id, formData)
-          .then((data) => {
-            setLoading(false);
-            // console.log(data.data);
-            history.push({ pathname: "/businessusers" });
-          })
-          .catch((err) => {
-            setLoading(false);
-            setWarning(true);
-            console.log(err);
-          })
-      : setWarning(true);
-    setLoading(false);
-  };
-
-  const fileHandler = (f) => {
-    // console.log(f);
-
-    let type = f.type?.split("/")[1];
-    // console.log(type);
-    if (
-      (type == "png" || type == "jpg" || type == "jpeg") &&
-      f.size <= 100 * 1024
-    ) {
-      setFile(f);
-    } else {
-      alert("Olceg we type uns berin!");
-    }
-  };
-
-  const blockUser = () => {
+  const updatePost = () => {
     axiosInstance
-      .post("users/block/" + id, {
-        reason: reason,
-      })
+      .post("/posts/update/" + id, { is_active: post?.is_active })
       .then((data) => {
+        setLoading(false);
         // console.log(data.data);
-        setReason("");
-        setPost({ ...post, has_blocked: false });
+        history.push({ pathname: "/products" });
       })
       .catch((err) => {
         console.log(err);
@@ -911,15 +841,7 @@ const ProductsUpdate = () => {
             </p>
           </div>
           <div className="flex justify-start w-[49%]">
-            <Switch
-              checked={post?.can_comment == 1 ? true : false}
-              onChange={(event) =>
-                setPost({
-                  ...post,
-                  can_comment: event.target.checked ? 1 : 0,
-                })
-              }
-            />
+            <Switch checked={post?.can_comment == 1 ? true : false} />
           </div>
         </div>
 
@@ -956,87 +878,13 @@ const ProductsUpdate = () => {
             Goýbolsun et
           </button>
           <button
-            onClick={() => updateUser()}
+            onClick={() => updatePost()}
             className="text-white text-[14px] font-[500] py-[11px] px-[27px] bg-blue rounded-[8px] hover:bg-opacity-90"
           >
             Ýatda sakla
           </button>
         </div>
       </div>
-
-      {/*  post Block */}
-      <Modal
-        aria-labelledby="modal-title"
-        aria-describedby="modal-desc"
-        open={post?.has_blocked}
-        onClose={() => setPost({ ...post, has_blocked: false })}
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <Sheet
-          variant="outlined"
-          sx={{
-            maxWidth: 600,
-            width: "50%",
-            borderRadius: "md",
-            p: 3,
-            boxShadow: "lg",
-          }}
-        >
-          <div className="flex w-full border-b-[1px] border-[#E9EBF0] pb-5 justify-between items-center">
-            <h1 className="text-[20px] font-[500]">
-              Hasaby bloklamanyň sebäbi
-            </h1>
-            <button onClick={() => setPost({ ...post, has_blocked: false })}>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15 1L1.00006 14.9999M0.999999 0.999943L14.9999 14.9999"
-                  stroke="#B1B1B1"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div>
-            <h1 className="text-[16px] text-left mt-4 mb-1 font-[400]">
-              Düşündiriş
-            </h1>
-
-            <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              name=""
-              placeholder="Text"
-              id=""
-              cols="30"
-              rows="10"
-              className="text-[14px] max-h-[400px] min-h-[100px] w-full mb-1 text-[#98A2B2] font-[400]  border-[1px] border-[#98A2B2] rounded-[6px] px-5 py-3 outline-none "
-            ></textarea>
-
-            <div className="flex w-full gap-[29px] justify-center">
-              <button
-                onClick={() => setPost({ ...post, has_blocked: false })}
-                className="text-[14px] font-[500] px-6 py-3 text-[#98A2B2] rounded-[8px] hover:bg-[#fd6060] hover:text-white"
-              >
-                Goýbolsun et
-              </button>
-              <button
-                onClick={() => blockUser()}
-                className="text-[14px] font-[500] text-white hover:bg-opacity-90  bg-blue rounded-[8px] px-6 py-3"
-              >
-                Blokla
-              </button>
-            </div>
-          </div>
-        </Sheet>
-      </Modal>
     </div>
   );
 };

@@ -35,6 +35,8 @@ import {
   ReportTypesUpdate,
   ReportPosts,
   ReportPostsUpdate,
+  ReportUsers,
+  ReportUsersUpdate,
 } from "../pages/index";
 
 import ScrollIntoView from "./ScrollIntoView";
@@ -221,8 +223,14 @@ const App = () => {
 
             <PrivateRoute
               restricted={true}
-              component={Home}
+              component={ReportUsers}
               path="/accountreports"
+              exact
+            />
+            <PrivateRoute
+              restricted={true}
+              component={ReportUsersUpdate}
+              path="/accountreports/:id"
               exact
             />
 
